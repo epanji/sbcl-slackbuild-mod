@@ -22,10 +22,20 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Modified by Eugene M., <damagedone at gmx dot com>
+# Modified by Panji Kusuma., <epanji at gmail dot com>
 
 PRGNAM=sbcl
-VERSION=${VERSION:-1.4.12}
+# Check version.txt is exists.
+if [ -f version.txt ]; then
+    VERSION=${VERSION:-$(cat version.txt)}
+    if [ -z "$VERSION" ]; then
+        echo "version.txt is empty."
+        exit 0
+    fi
+else
+    echo "version.txt not exists."
+    exit 0
+fi
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
@@ -56,14 +66,20 @@ else
   LIBDIRSUFFIX=""
 fi
 
+# Please extract manually.
+SRC=${SRC:-/usr/src}
+if [ ! -d "$SRC/$PRGNAM-$VERSION" ]; then
+   echo "tar xvf $CWD/$PRGNAM-$VERSION-source.tar.bz2 -C $SRC"
+   exit 0
+fi
+
 set -e
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION-source.tar.bz2
-cd $PRGNAM-$VERSION
+cd $SRC/$PRGNAM-$VERSION
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
@@ -71,7 +87,8 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-sh make.sh clisp --prefix=/usr --fancy
+# sh make.sh clisp --prefix=/usr --fancy
+sh make.sh --xc-host='sbcl --core /usr/lib64/sbcl/sbcl.core' --prefix=/usr --fancy
 
 make -C doc/manual info pdf
 
