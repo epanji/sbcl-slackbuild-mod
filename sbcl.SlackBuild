@@ -87,8 +87,11 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# sh make.sh clisp --prefix=/usr --fancy
-sh make.sh --xc-host='sbcl --core /usr/lib64/sbcl/sbcl.core' --prefix=/usr --fancy
+if [ -x /usr/bin/sbcl ]; then
+    sh make.sh --xc-host='sbcl --core /usr/lib'${LIBDIRSUFFIX}'/sbcl/sbcl.core' --prefix=/usr --fancy
+else
+    sh make.sh clisp --prefix=/usr --fancy
+fi
 
 make -C doc/manual info pdf
 
