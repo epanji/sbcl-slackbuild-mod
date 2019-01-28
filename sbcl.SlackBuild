@@ -93,7 +93,7 @@ else
     sh make.sh clisp --prefix=/usr --fancy
 fi
 
-make -C doc/manual info pdf
+make -C doc/manual info pdf || : # Ignore errors
 
 SBCL_HOME="" \
 INSTALL_ROOT=$PKG/usr \
