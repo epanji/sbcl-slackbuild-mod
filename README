@@ -4,3 +4,9 @@ license. In addition to the compiler and runtime system for ANSI
 Common Lisp, it provides an interactive environment including a
 debugger, a statistical profiler, a code coverage tool, and many
 other extensions.
+
+Enable parallel garbage collector support via:
+
+  PARALLEL_GC=Yes ./sbcl.SlackBuild
+
+By default, it is use gencgc.
